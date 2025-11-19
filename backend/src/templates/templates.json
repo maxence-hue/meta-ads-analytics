@@ -1,0 +1,47 @@
+[
+  {
+    "id": "product-showcase",
+    "name": "Product Showcase",
+    "category": "product",
+    "description": "Met en valeur un produit avec ses caractéristiques",
+    "preview_url": "/templates/product-showcase.png",
+    "usage_count": 0,
+    "is_premium": false
+  },
+  {
+    "id": "sales-promotion", 
+    "name": "Sales Promotion",
+    "category": "promotion",
+    "description": "Template pour promotions et soldes avec prix barrés",
+    "preview_url": "/templates/sales-promotion.png",
+    "usage_count": 0,
+    "is_premium": false
+  },
+  {
+    "id": "social-proof",
+    "name": "Social Proof",
+    "category": "testimonial",
+    "description": "Met en avant les avis clients et témoignages",
+    "preview_url": "/templates/social-proof.png",
+    "usage_count": 0,
+    "is_premium": false
+  },
+  {
+    "id": "minimal",
+    "name": "Minimal",
+    "category": "brand",
+    "description": "Design épuré et moderne",
+    "preview_url": "/templates/minimal.png",
+    "usage_count": 0,
+    "is_premium": false
+  },
+  {
+    "id": "story-carousel",
+    "name": "Story Carousel",
+    "category": "story",
+    "description": "Format optimisé pour les stories Instagram/Facebook",
+    "preview_url": "/templates/story-carousel.png",
+    "usage_count": 0,
+    "is_premium": false
+  }
+]

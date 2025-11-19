@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Créatives Meta - Avec Scraping Auto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .creative-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .creative-card:hover {
+            transform: translateY(-2px);
+            border-color: #667eea;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fab fa-meta text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">Générateur de Créatives Meta</h1>
+                        <p class="text-sm opacity-90">Avec configuration automatique par scraping</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Step Indicator -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center space-x-4">
+                <div id="step1-indicator" class="flex items-center space-x-2 px-4 py-2 rounded-full bg-purple-600 text-white font-semibold">
+                    <span class="w-8 h-8 rounded-full bg-white text-purple-600 flex items-center justify-center font-bold">1</span>
+                    <span>Configuration Marque</span>
+                </div>
+                <div class="w-16 h-1 bg-gray-300"></div>
+                <div id="step2-indicator" class="flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-300 text-gray-600 font-semibold">
+                    <span class="w-8 h-8 rounded-full bg-white text-gray-600 flex items-center justify-center font-bold">2</span>
+                    <span>Génération Créatives</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Brand Configuration -->
+        <section id="brandConfigSection" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-6 flex items-center">
+                <i class="fas fa-globe mr-2 text-purple-600"></i>
+                Configuration Automatique de la Marque
+            </h2>
+            
+            <div class="mb-6">
+                <p class="text-gray-600 mb-4">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Entrez l'URL de votre site web. Nous allons automatiquement extraire les couleurs, polices, images et contenu pour personnaliser vos créatives.
+                </p>
+                
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-link mr-1"></i> URL du site web
+                        </label>
+                        <input type="url" id="websiteUrl" placeholder="https://www.exemple.com" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="analyzeBrand()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition duration-200 transform hover:scale-105">
+                            <i class="fas fa-search mr-2"></i> Analyser le site
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand Info Display -->
+            <div id="brandInfoDisplay" class="hidden">
+                <div class="border-t pt-6 mt-6">
+                    <h3 class="font-semibold text-lg mb-4 flex items-center">
+                        <i class="fas fa-palette mr-2 text-purple-600"></i>
+                        Informations Extraites (Modifiables)
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Brand Colors -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-palette mr-1"></i> Couleurs de la marque
+                            </label>
+                            <div id="brandColors" class="flex gap-2 mb-2">
+                                <!-- Colors will be inserted here -->
+                            </div>
+                            <input type="text" id="brandColorsInput" placeholder="#667eea, #764ba2, ..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        
+                        <!-- Brand Fonts -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-font mr-1"></i> Polices principales
+                            </label>
+                            <input type="text" id="brandFonts" placeholder="Ex: Inter, Roboto" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        
+                        <!-- Brand Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-trademark mr-1"></i> Nom de la marque *
+                            </label>
+                            <input type="text" id="brandName" placeholder="Nom de votre marque" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        
+                        <!-- Brand Description -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-info-circle mr-1"></i> Description
+                            </label>
+                            <textarea id="brandDescription" rows="2" placeholder="Description de votre marque" 
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Brand Images -->
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-images mr-1"></i> Images extraites du site (cliquez pour sélectionner)
+                        </label>
+                        <div id="brandImages" class="grid grid-cols-4 gap-3">
+                            <!-- Images will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="goToCreativeGeneration()" class="bg-gradient-to-r from-green-600 to-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-green-700 hover:to-teal-700 transition duration-200 transform hover:scale-105">
+                            <i class="fas fa-arrow-right mr-2"></i> Continuer vers la génération
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Creative Generation -->
+        <section id="creativeInputSection" class="hidden bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-6 flex items-center">
+                <i class="fas fa-magic mr-2 text-purple-600"></i>
+                Configuration de la Créative
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Product/Service Info -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-box mr-1"></i> Produit ou Service
+                        </label>
+                        <input type="text" id="productName" placeholder="Ex: Chaussures de sport" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-tag mr-1"></i> Description
+                        </label>
+                        <textarea id="productDescription" rows="3" placeholder="Décrivez votre produit ou service..." 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-bullseye mr-1"></i> Objectif de campagne *
+                        </label>
+                        <select id="campaignObjective" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option value="">Sélectionner un objectif</option>
+                            <option value="awareness">Notoriété</option>
+                            <option value="traffic">Trafic</option>
+                            <option value="engagement">Engagement</option>
+                            <option value="conversions">Conversions</option>
+                            <option value="sales">Ventes</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Target Audience & Platform -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-users mr-1"></i> Audience Cible
+                        </label>
+                        <input type="text" id="targetAudience" placeholder="Ex: Femmes 25-35 ans, intéressées par le fitness" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-layer-group mr-1"></i> Plateforme *
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-purple-50 transition">
+                                <input type="checkbox" value="facebook" class="platform-checkbox mr-2">
+                                <i class="fab fa-facebook text-blue-600"></i>
+                                <span class="ml-1">Facebook</span>
+                            </label>
+                            <label class="flex items-center justify-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-pink-50 transition">
+                                <input type="checkbox" value="instagram" class="platform-checkbox mr-2">
+                                <i class="fab fa-instagram text-pink-600"></i>
+                                <span class="ml-1">Instagram</span>
+                            </label>
+                            <label class="flex items-center justify-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gradient-to-r hover:from-pink-500 hover:to-purple-500 hover:text-white transition">
+                                <input type="checkbox" value="stories" class="platform-checkbox mr-2">
+                                <i class="fas fa-camera"></i>
+                                <span class="ml-1">Stories</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-palette mr-1"></i> Style Visuel
+                        </label>
+                        <select id="visualStyle" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option value="modern">Moderne</option>
+                            <option value="minimalist">Minimaliste</option>
+                            <option value="vibrant">Vibrant</option>
+                            <option value="elegant">Élégant</option>
+                            <option value="playful">Amusant</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-center">
+                <button onclick="generateCreatives()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition duration-200 transform hover:scale-105">
+                    <i class="fas fa-sparkles mr-2"></i> Générer les Créatives
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden bg-white rounded-xl shadow-md p-12 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-600">Génération des créatives en cours...</p>
+        </div>
+
+        <!-- Results Section -->
+        <section id="resultsSection" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold flex items-center">
+                    <i class="fas fa-layer-group mr-2 text-purple-600"></i>
+                    Créatives Générées
+                </h2>
+                <button onclick="exportCreatives()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                    <i class="fas fa-download mr-2"></i> Exporter
+                </button>
+            </div>
+            
+            <div id="creativesContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Creatives will be inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm opacity-75">© 2024 Générateur de Créatives Meta - Avec scraping automatique</p>
+            <p class="text-xs opacity-50 mt-2">
+                <i class="fas fa-server mr-1"></i> Assurez-vous que le serveur backend est démarré sur le port 3000
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

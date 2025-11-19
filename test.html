@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Meta Ads Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .status {
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { border-left: 4px solid #42B883; }
+        .error { border-left: 4px solid #F02849; }
+        .info { border-left: 4px solid #1877F2; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test de l'application</h1>
+    
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function addStatus(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${message}`;
+            results.appendChild(div);
+        }
+        
+        // Test 1: Chargement des scripts
+        addStatus('Début des tests...', 'info');
+        
+        // Test 2: BrandManager
+        const script1 = document.createElement('script');
+        script1.src = 'js/brandManager.js';
+        script1.onload = () => {
+            if (typeof BrandManager !== 'undefined') {
+                addStatus('✅ BrandManager chargé', 'success');
+            } else {
+                addStatus('❌ BrandManager non disponible', 'error');
+            }
+        };
+        script1.onerror = () => addStatus('❌ Erreur chargement brandManager.js', 'error');
+        document.head.appendChild(script1);
+        
+        // Test 3: Templates
+        const script2 = document.createElement('script');
+        script2.src = 'js/templates.js';
+        script2.onload = () => {
+            if (typeof CreativeTemplates !== 'undefined') {
+                addStatus('✅ CreativeTemplates chargé', 'success');
+            } else {
+                addStatus('❌ CreativeTemplates non disponible', 'error');
+            }
+        };
+        script2.onerror = () => addStatus('❌ Erreur chargement templates.js', 'error');
+        document.head.appendChild(script2);
+        
+        // Test 4: ImageHandler
+        const script3 = document.createElement('script');
+        script3.src = 'js/imageHandler.js';
+        script3.onload = () => {
+            if (typeof ImageHandler !== 'undefined') {
+                addStatus('✅ ImageHandler chargé', 'success');
+            } else {
+                addStatus('❌ ImageHandler non disponible', 'error');
+            }
+        };
+        script3.onerror = () => addStatus('❌ Erreur chargement imageHandler.js', 'error');
+        document.head.appendChild(script3);
+        
+        // Test 5: CreativeGenerator
+        const script4 = document.createElement('script');
+        script4.src = 'js/creativeGenerator.js';
+        script4.onload = () => {
+            if (typeof CreativeGenerator !== 'undefined') {
+                addStatus('✅ CreativeGenerator chargé', 'success');
+            } else {
+                addStatus('❌ CreativeGenerator non disponible', 'error');
+            }
+        };
+        script4.onerror = () => addStatus('❌ Erreur chargement creativeGenerator.js', 'error');
+        document.head.appendChild(script4);
+        
+        // Test 6: App principal
+        setTimeout(() => {
+            const script5 = document.createElement('script');
+            script5.src = 'js/app.js';
+            script5.onload = () => {
+                if (typeof MetaAdsGenerator !== 'undefined') {
+                    addStatus('✅ MetaAdsGenerator chargé', 'success');
+                    
+                    // Test d'initialisation
+                    setTimeout(() => {
+                        if (window.app) {
+                            addStatus('✅ Application initialisée avec succès', 'success');
+                        } else {
+                            addStatus('⚠️ Application non initialisée', 'error');
+                        }
+                    }, 1000);
+                } else {
+                    addStatus('❌ MetaAdsGenerator non disponible', 'error');
+                }
+            };
+            script5.onerror = () => addStatus('❌ Erreur chargement app.js', 'error');
+            document.head.appendChild(script5);
+        }, 2000);
+        
+        // Capturer les erreurs
+        window.addEventListener('error', (e) => {
+            addStatus(`❌ Erreur JavaScript: ${e.message} (${e.filename}:${e.lineno})`, 'error');
+        });
+        
+        setTimeout(() => {
+            addStatus('Tests terminés. Vérifiez les résultats ci-dessus.', 'info');
+        }, 5000);
+    </script>
+</body>
+</html>

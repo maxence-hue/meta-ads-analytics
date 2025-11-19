@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Ads Creative Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #1C1E21;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .app-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .card h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4B5563;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .status.success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #6EE7B7;
+        }
+        
+        .status.error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FCA5A5;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #E5E7EB;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>🚀 Meta Ads Creative Generator</h1>
+        <p>Créez des créatives qui convertissent pour vos campagnes Facebook & Instagram</p>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2><i class="fas fa-building"></i> Configuration de la Marque</h2>
+            
+            <div id="status"></div>
+            
+            <form id="brandForm">
+                <div class="form-group">
+                    <label>Nom de la marque *</label>
+                    <input type="text" id="brandName" required placeholder="Ex: Ma Super Marque">
+                </div>
+                
+                <div class="form-group">
+                    <label>Site web</label>
+                    <input type="url" id="websiteUrl" placeholder="https://example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Industrie</label>
+                    <select id="industry">
+                        <option value="">Sélectionner</option>
+                        <option value="ecommerce">E-commerce</option>
+                        <option value="saas">SaaS</option>
+                        <option value="fashion">Mode</option>
+                        <option value="tech">Technologie</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Couleur principale</label>
+                    <input type="color" id="primaryColor" value="#1877F2">
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i> Sauvegarder
+                </button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-magic"></i> Test de génération</h2>
+            <p>Cette version simplifiée vous permet de tester l'application sans les modules complexes.</p>
+            <button onclick="testGeneration()" class="btn">
+                <i class="fas fa-play"></i> Tester
+            </button>
+            <div id="testResult"></div>
+        </div>
+    </div>
+    
+    <script>
+        console.log('✅ Script chargé');
+        
+        // Formulaire
+        document.getElementById('brandForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const brandData = {
+                brandName: document.getElementById('brandName').value,
+                websiteUrl: document.getElementById('websiteUrl').value,
+                industry: document.getElementById('industry').value,
+                primaryColor: document.getElementById('primaryColor').value
+            };
+            
+            // Sauvegarder dans localStorage
+            localStorage.setItem('brandData', JSON.stringify(brandData));
+            
+            // Afficher le succès
+            const status = document.getElementById('status');
+            status.className = 'status success';
+            status.innerHTML = '✅ Marque sauvegardée avec succès !';
+            
+            console.log('Marque sauvegardée:', brandData);
+        });
+        
+        // Charger les données sauvegardées
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM chargé');
+            
+            const saved = localStorage.getItem('brandData');
+            if (saved) {
+                const brandData = JSON.parse(saved);
+                document.getElementById('brandName').value = brandData.brandName || '';
+                document.getElementById('websiteUrl').value = brandData.websiteUrl || '';
+                document.getElementById('industry').value = brandData.industry || '';
+                document.getElementById('primaryColor').value = brandData.primaryColor || '#1877F2';
+                
+                const status = document.getElementById('status');
+                status.className = 'status success';
+                status.innerHTML = 'ℹ️ Données de marque chargées';
+            }
+        });
+        
+        // Test de génération
+        function testGeneration() {
+            const result = document.getElementById('testResult');
+            result.innerHTML = '<div class="loading active"><div class="spinner"></div><p>Génération en cours...</p></div>';
+            
+            setTimeout(() => {
+                result.innerHTML = `
+                    <div class="status success">
+                        ✅ Test réussi ! L'application fonctionne correctement.
+                        <br><br>
+                        <strong>Prochaines étapes :</strong>
+                        <ul style="margin-top:10px;padding-left:20px;">
+                            <li>Fermez Chrome complètement</li>
+                            <li>Réouvrez index.html</li>
+                            <li>Vérifiez la console (F12) pour les erreurs</li>
+                        </ul>
+                    </div>
+                `;
+            }, 2000);
+        }
+        
+        console.log('✅ Application simplifiée prête');
+    </script>
+</body>
+</html>

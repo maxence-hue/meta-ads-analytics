@@ -1,0 +1,35 @@
+# Commandes Railway à exécuter dans votre terminal
+# Copiez-collez ces commandes une par une
+
+cd /Users/maxencealehause/CascadeProjects/windsurf-project/backend
+
+# 1. Si Railway CLI n'est pas installé
+npm install -g @railway/cli
+
+# 2. Login (déjà fait normalement)
+# railway login
+
+# 3. Lier au service (choisir le service dans la liste)
+railway service
+
+# 4. Variables d'environnement - REMPLACER LES VALEURS
+railway variables --set "NODE_ENV=production"
+railway variables --set "PORT=5001"  
+railway variables --set "FRONTEND_URL=https://frontend-h9watnkmy-marketia.vercel.app"
+railway variables --set "META_APP_ID=VOTRE_META_APP_ID"
+railway variables --set "META_APP_SECRET=VOTRE_META_APP_SECRET"
+railway variables --set "META_REDIRECT_URI=https://frontend-h9watnkmy-marketia.vercel.app/api/v1/meta/callback"
+railway variables --set "OPENAI_API_KEY=VOTRE_OPENAI_KEY"
+railway variables --set "DATABASE_URL=VOTRE_POSTGRES_URL"
+railway variables --set "REDIS_URL=VOTRE_REDIS_URL"
+railway variables --set "JWT_SECRET=$(openssl rand -base64 32)"
+railway variables --set "ENABLE_WEBSOCKET=true"
+railway variables --set "RATE_LIMIT_WINDOW_MS=900000"
+railway variables --set "RATE_LIMIT_MAX_REQUESTS=100"
+
+# 5. Déployer
+railway up
+
+# 6. Obtenir l'URL publique
+railway status
+railway domain
