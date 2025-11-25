@@ -28,15 +28,28 @@ export function AIGenPanel() {
     mutationFn: async () => {
       setIsGeneratingImage(true);
       setShowModal(true); // Ouvrir le modal au début de la génération
-      // We reuse the factory endpoint for convenience, or create a new dedicated one
-      // Assuming factory endpoint works for generic generation
-      return api.factory.generateBackground(prompt, style, {}, selectedBrand);
+
+      console.log('🚀 Démarrage génération image Gemini...', { prompt, style });
+
+      // Appel correct à l'API factory.generateBackground
+      const response = await api.factory.generateBackground(
+        prompt,
+        style,
+        { theme: 'modern', visualStyle: { colors: selectedBrand?.colors } }, // campaign
+        selectedBrand // brand
+      );
+
+      console.log('✅ Réponse API:', response);
+      return response;
     },
     onSuccess: (data) => {
-      setGeneratedImageUrl(data.imageUrl);
+      console.log('✅ Image générée avec succès:', data);
+      // L'API retourne imageUrl ou localPath
+      setGeneratedImageUrl(data.imageUrl || data.localPath);
       setIsGeneratingImage(false);
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('❌ Erreur génération:', error);
       setIsGeneratingImage(false);
       setShowModal(false);
     }
